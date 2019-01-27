@@ -54,6 +54,7 @@ void loop() {
 
       dispensing = false;
       digitalWrite(PIN_DISPENSE_STATUS, LOW);
+      publishState();
 
     }
     // If the dispense time has elapsed, reset the dispenser
@@ -103,6 +104,7 @@ void dispense() {
     dispensing = true;
     lastDispenseTime = millis();
     digitalWrite(PIN_DISPENSE_STATUS, HIGH);
+    publishState();
 
   }
 

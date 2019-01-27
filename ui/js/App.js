@@ -25,7 +25,7 @@ var stateCallback = function( state ) {
 
 	if( !loaded ) {
 
-		openPageLogin( );
+		openPageMain( );
 		loaded = true;
 
 	}
@@ -95,8 +95,8 @@ document.addEventListener( "DOMContentLoaded", function( e ) {
 
 	// Open initial loading page
 	loaded = false;
-	//openPageLoading( );
-	openPageLogin( );
+	openPageLoading( );
+	//openPageLogin( );
 
 	// Set up listener
 	cloud.setListener( stateCallback );
