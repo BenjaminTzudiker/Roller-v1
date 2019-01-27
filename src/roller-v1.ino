@@ -8,15 +8,19 @@
 // Pins
 #define PIN_SERVO D0
 #define PIN_DISPENSE_BUTTON D1
+#define PIN_DISPENSE_STATUS D7
 
 // Particle server info
 const String TOPIC = "omnaria/roller-v1";
 
 // Servo
-const unsigned long DISPENSE_DURATION = 500; // Time in ms before reseting the dispenser
+const unsigned long DISPENSE_DURATION = 1000; // Time in ms before reseting the dispenser
+const unsigned long DISPENSE_DELAY = 1000; // Time in ms after the dispense ends before another dispense can occur
 const unsigned int SERVO_ROTATION_MIN = 5; // Minimum servo rotation in degrees
 const unsigned int SERVO_ROTATION_MAX = 175; // Maximum servo rotation in degrees
 Servo servo;
+bool currentlyDispensing = false;
+unsigned long lastDispenseTime = 0;
 
 // Hardware button debounce
 const unsigned long DEBOUNCE = 100; // Delay in ms before the button functionality takes place
@@ -30,36 +34,59 @@ void setup() {
   servo.attach(PIN_SERVO); // Sets the pin for the servo
   servo.write(SERVO_ROTATION_MIN); // Resets the servo
   pinMode(PIN_DISPENSE_BUTTON, INPUT_PULLUP); // Sets the pin for the hardware button
+  pinMode(PIN_DISPENSE_STATUS, OUTPUT); // Sets the pin for the dispense status light
+
+  Particle.function("dispense", dispenseCloud); // Exposes the dispenseCloud function to the JavaScript on the webpage
 
 }
 
 void loop() {
 
-  unsigned long millis = millis(); // Loop ms reading
+  unsigned long mil = millis(); // Loop ms reading
+
+  // Dispenser checking:
+
+  if(currentlyDispensing) {
+
+    // Allow another dispense after the dispenser is fully reset
+    if(lastDispenseTime + DISPENSE_DURATION + DISPENSE_DELAY <= mil) {
+
+      currentlyDispensing = false;
+      digitalWrite(PIN_DISPENSE_STATUS, LOW);
+
+    }
+    // If the dispense time has elapsed, reset the dispenser
+    else if(lastDispenseTime + DISPENSE_DURATION <= mil) {
+
+      rotate(SERVO_ROTATION_MIN);
+
+    }
+
+  }
 
   // Hardware button checking/debounce:
 
-  bool isPressed = isPressed();
+  bool pressed = isPressed();
 
   // Checks if the button functionality should run
-  if(isPressed && lastPressTime + DEBOUNCE <= millis && !alreadyDone) {
+  if(pressed && lastPressTime + DEBOUNCE <= mil && !alreadyDone) {
 
     dispense();
     alreadyDone = true;
 
   }
   // Checks if the button has just been released
-  else if(!isPressed && lastState) {
+  else if(!pressed && lastState) {
 
     lastState = false;
     alreadyDone = false;
 
   }
   // Checks if the button has just been pressed
-  else if(isPressed && !lastState) {
+  else if(pressed && !lastState) {
 
     lastState = true;
-    lastPressTime = millis;
+    lastPressTime = mil;
 
   }
 
@@ -69,7 +96,30 @@ void loop() {
 // Attempts to activate the dispenser
 void dispense() {
 
+  if(!currentlyDispensing) {
 
+    rotate(SERVO_ROTATION_MAX);
+    currentlyDispensing = true;
+    lastDispenseTime = millis();
+    digitalWrite(PIN_DISPENSE_STATUS, HIGH);
+
+  }
+
+}
+
+// Publicly exposed cloud function
+int dispenseCloud(String args) {
+
+  dispense();
+  return 0;
+
+}
+
+// Sets the servo to the specified position; used in case fault checking is added at a later date
+bool rotate(int degrees) {
+
+  servo.write(degrees);
+  return true;
 
 }
 
