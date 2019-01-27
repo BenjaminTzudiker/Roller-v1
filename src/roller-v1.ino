@@ -39,6 +39,8 @@ void setup() {
   Particle.function("dispense", dispenseCloud); // Exposes the dispenseCloud function to the JavaScript on the webpage
   Particle.function("publishState", publishState); // Exposes the publishState function to the JavaScript on the webpage
 
+  publishState("");
+
 }
 
 void loop() {
@@ -54,7 +56,7 @@ void loop() {
 
       dispensing = false;
       digitalWrite(PIN_DISPENSE_STATUS, LOW);
-      publishState();
+      publishState("");
 
     }
     // If the dispense time has elapsed, reset the dispenser
@@ -104,7 +106,7 @@ void dispense() {
     dispensing = true;
     lastDispenseTime = millis();
     digitalWrite(PIN_DISPENSE_STATUS, HIGH);
-    publishState();
+    publishState("");
 
   }
 

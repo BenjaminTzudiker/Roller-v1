@@ -52,7 +52,7 @@ var cloud = {
 
 		var state = {
 			
-			currentlyDispensing: cloud.currentlyDispensing
+			dispensing: cloud.dispensing
 
 		};
 
