@@ -25,7 +25,7 @@ var localState = {
 // Passed to and called by the model
 var stateCallback = function( state ) {
 
-	fullyUpdateLocalState( state );
+	updateAppVariables( state );
 	updateSiteInformationFromLocalState( );
 
 	if( !loaded ) {
@@ -37,8 +37,8 @@ var stateCallback = function( state ) {
 
 }
 
-// Updates localState variables
-var fullyUpdateLocalState = function( state ) {
+// Updates localState variables to match state
+var updateAppVariables = function( state ) {
 
 	localState.dispensing = state.dispensing;
 

@@ -15,7 +15,7 @@ const String TOPIC = "omnaria/roller-v1";
 
 // Servo
 const unsigned long DISPENSE_DURATION = 1000; // Time in ms before reseting the dispenser
-const unsigned long DISPENSE_DELAY = 1000; // Time in ms after the dispense ends before another dispense can occur
+const unsigned long DISPENSE_DELAY = 1000; // Time in ms after the dispense reset starts before another dispense can occur
 const unsigned int SERVO_ROTATION_MIN = 5; // Minimum servo rotation in degrees
 const unsigned int SERVO_ROTATION_MAX = 175; // Maximum servo rotation in degrees
 Servo servo;
@@ -39,7 +39,11 @@ void setup() {
   Particle.function("dispense", dispenseCloud); // Exposes the dispenseCloud function to the JavaScript on the webpage
   Particle.function("publishState", publishState); // Exposes the publishState function to the JavaScript on the webpage
 
-  publishState("");
+  // Cause the servo to reset in case the photon lost power mid way through a dispense
+  dispensing = true;
+  lastDispenseTime = millis() - DISPENSE_DURATION;
+
+  publishState(""); // Send state info in case UI was open before the photon powered on
 
 }
 
