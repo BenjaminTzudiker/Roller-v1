@@ -1,64 +1,92 @@
 var myParticleAccessToken = "87ebbe7294883ac85c9659ca08cdb00735b91c51"
-var myDeviceId =            "210036001947343438323536"
-var topic =                 "omnaria/roller-v1"
+var myDeviceId =			"210036001947343438323536"
+var topic =					"omnaria/roller-v1"
 
 var newCloudEvent = function( state ) {
 
-  var obj = state.data;
-  obj = JSON.parse( obj );
-
-  cloud.stateChange();
+	var obj = state.data;
+	obj = JSON.parse( obj );
+	
+	cloud.updateCloudVariables( obj );
+	cloud.stateChange( );
 
 }
 
 var cloud = {
 
-  particle: null,
-  listener: null,
+	dispensing: false,
 
-  "setListener": function( listener ) {
+	particle: null,
+	listener: null,
+	
+	"dispense": function( ) {
+		
+		var functionData = {
 
-    cloud.listener = listener;
+			deviceId: myDeviceId,
+			name: "dispense",
+			argument: "",
+			auth: myParticleAccessToken
 
-  },
+		};
+		
+		function onSuccess(e) { console.log( "Sending dispense request..." ) }
+		function onFailure(e) { console.dir( e ); }
+		particle.callFunction( functionData ).then( onSuccess, onFailure );
+		
+	},
+	
+	"updateCloudVariables": function( state ) {
+	
+		cloud.dispensing = state.dispensing;
+	
+	},
 
-  "stateChange": function( ) {
+	"setListener": function( listener ) {
 
-    var state = {
+		cloud.listener = listener;
 
-    };
+	},
 
-    cloud.listener( state );
+	"stateChange": function( ) {
 
-  },
+		var state = {
+			
+			currentlyDispensing: cloud.currentlyDispensing
 
-  "setup": function( ) {
+		};
 
-    particle = new Particle();
+		cloud.listener( state );
 
-    function onSuccess( stream ) {
+	},
 
-      stream.on( 'event', newCloudEvent );
+	"setup": function( ) {
 
-      var functionData = {
+		particle = new Particle();
 
-        deviceId: myDeviceId,
-        name: "publishState",
-        argument: "",
-        auth: myParticleAccessToken
+		function onSuccess( stream ) {
 
-      };
+			stream.on( 'event', newCloudEvent );
 
-      function onSuccess(e) { console.log( "Setup complete!" ) }
-      function onFailure(e) { console.dir( e ); }
-      particle.callFunction( functionData ).then( onSuccess, onFailure );
+			var functionData = {
 
-    }
+				deviceId: myDeviceId,
+				name: "publishState",
+				argument: "",
+				auth: myParticleAccessToken
 
-    function onFailure( e ) { console.dir( e ); }
+			};
 
-    particle.getEventStream( { name: topic, auth: myParticleAccessToken } ).then( onSuccess, onFailure );
+			function onSuccess(e) { console.log( "Setup complete!" ) }
+			function onFailure(e) { console.dir( e ); }
+			particle.callFunction( functionData ).then( onSuccess, onFailure );
 
-  }
+		}
+
+		function onFailure( e ) { console.dir( e ); }
+
+		particle.getEventStream( { name: topic, auth: myParticleAccessToken } ).then( onSuccess, onFailure );
+
+	}
 
 }

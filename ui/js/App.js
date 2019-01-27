@@ -11,7 +11,7 @@ var loadingHandle;
 
 var localState = {
 
-	
+	dispensing: false
 
 };
 
@@ -34,7 +34,7 @@ var stateCallback = function( state ) {
 
 var fullyUpdateLocalState = function( state ) {
 
-	
+	localState.dispensing = state.dispensing;
 
 	updateSiteInformationFromLocalState( );
 

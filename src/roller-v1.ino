@@ -19,7 +19,7 @@ const unsigned long DISPENSE_DELAY = 1000; // Time in ms after the dispense ends
 const unsigned int SERVO_ROTATION_MIN = 5; // Minimum servo rotation in degrees
 const unsigned int SERVO_ROTATION_MAX = 175; // Maximum servo rotation in degrees
 Servo servo;
-bool currentlyDispensing = false;
+bool dispensing = false;
 unsigned long lastDispenseTime = 0;
 
 // Hardware button debounce
@@ -37,6 +37,7 @@ void setup() {
   pinMode(PIN_DISPENSE_STATUS, OUTPUT); // Sets the pin for the dispense status light
 
   Particle.function("dispense", dispenseCloud); // Exposes the dispenseCloud function to the JavaScript on the webpage
+  Particle.function("publishState", publishState); // Exposes the publishState function to the JavaScript on the webpage
 
 }
 
@@ -46,12 +47,12 @@ void loop() {
 
   // Dispenser checking:
 
-  if(currentlyDispensing) {
+  if(dispensing) {
 
     // Allow another dispense after the dispenser is fully reset
     if(lastDispenseTime + DISPENSE_DURATION + DISPENSE_DELAY <= mil) {
 
-      currentlyDispensing = false;
+      dispensing = false;
       digitalWrite(PIN_DISPENSE_STATUS, LOW);
 
     }
@@ -96,10 +97,10 @@ void loop() {
 // Attempts to activate the dispenser
 void dispense() {
 
-  if(!currentlyDispensing) {
+  if(!dispensing) {
 
     rotate(SERVO_ROTATION_MAX);
-    currentlyDispensing = true;
+    dispensing = true;
     lastDispenseTime = millis();
     digitalWrite(PIN_DISPENSE_STATUS, HIGH);
 
@@ -111,6 +112,18 @@ void dispense() {
 int dispenseCloud(String args) {
 
   dispense();
+  return 0;
+
+}
+
+// Sends state information to the cloud
+int publishState(String args) {
+
+  String data = "{\"dispensing\": ";
+  data += dispensing ? "true" : "false";
+  data += "}";
+
+  Particle.publish( TOPIC, data, 60, PRIVATE );
   return 0;
 
 }
