@@ -6,15 +6,9 @@
 
 }
 
-.unselectable {
+.page {
 
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    -o-user-select: none;
-    user-select: none;
+	visibility: hidden;
 
 }
 
@@ -37,6 +31,18 @@
     float: left;
     width: 100%;
     padding: 10px;
+
+}
+
+.unselectable {
+
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    user-select: none;
 
 }
 

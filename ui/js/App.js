@@ -3,6 +3,10 @@
 var pageMain;
 var pageLoading;
 
+// Inputs and text
+
+var textLoading;
+
 // Other variables
 
 var loadingHandle;
@@ -22,6 +26,7 @@ var localState = {
 var stateCallback = function( state ) {
 
 	fullyUpdateLocalState( state );
+	updateSiteInformationFromLocalState( );
 
 	if( !loaded ) {
 
@@ -32,14 +37,14 @@ var stateCallback = function( state ) {
 
 }
 
+// Updates localState variables
 var fullyUpdateLocalState = function( state ) {
 
 	localState.dispensing = state.dispensing;
 
-	updateSiteInformationFromLocalState( );
-
 }
 
+// Changes webpage content to match the variables in localState
 var updateSiteInformationFromLocalState = function( ) {
 
 	
@@ -71,15 +76,16 @@ var openPageLoading = function( ) {
 
 // Misc functions
 
+// Does a single update of the loading screen
 var updateLoading = function( ) {
 
-	if( pageLoading.innerText.length < 10 ) {
+	if( textLoading.innerText.length < 10 ) {
 
-		pageLoading.innerText += '.';
+		textLoading.innerText += '.';
 
 	} else {
 
-		pageLoading.innerText = "Loading";
+		textLoading.innerText = "Loading";
 
 	}
 
@@ -89,16 +95,19 @@ var updateLoading = function( ) {
 // Page load
 
 document.addEventListener( "DOMContentLoaded", function( e ) {
-
-	pageMain = document.getElementById( "main" );
-	pageLoading = document.getElementById( "loading" );
+	
+	// Get pages
+	pageMain = document.getElementById( "pageMain" );
+	pageLoading = document.getElementById( "pageLoading" );
+	
+	// Get inputs and text
+	textLoading = document.getElementById( "textLoading" );
 
 	// Open initial loading page
 	loaded = false;
 	openPageLoading( );
-	//openPageLogin( );
 
-	// Set up listener
+	// Set listener and attempt to connect to the particle
 	cloud.setListener( stateCallback );
 	cloud.setup( );
 
