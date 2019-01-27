@@ -26,11 +26,37 @@
 
 }
 
-[class*="col"] {
+.button {
 
-    float: left;
-    width: 100%;
-    padding: 10px;
+	text-decoration: none;
+
+}
+
+div.button {
+
+	height: 60px;
+	background-color: lightgray;
+	font-size: 30px;
+	text-align: center;
+	border: 1px solid black;
+	border-radius: 5px;
+	padding: 15px;
+	text-decoration: none;
+	color: black;
+
+}
+
+div.button:hover {
+
+	background-color: gray;
+	cursor: pointer;
+
+}
+
+div.button:active {
+
+	background-color: white;
+	cursor: pointer;
 
 }
 
@@ -43,6 +69,14 @@
     -ms-user-select: none;
     -o-user-select: none;
     user-select: none;
+
+}
+
+[class*="col"] {
+
+    float: left;
+    width: 100%;
+    padding: 10px;
 
 }
 

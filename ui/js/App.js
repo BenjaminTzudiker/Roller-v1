@@ -5,6 +5,7 @@ var pageLoading;
 
 // Inputs and text
 
+var buttonRoll;
 var textLoading;
 
 // Other variables
@@ -47,7 +48,7 @@ var updateAppVariables = function( state ) {
 // Changes webpage content to match the variables in localState
 var updateSiteInformationFromLocalState = function( ) {
 
-	
+	buttonRoll.innerText = localState.dispensing ? "Dispensing..." : "Roll";
 
 }
 
@@ -76,6 +77,17 @@ var openPageLoading = function( ) {
 
 // Misc functions
 
+// Function called when the roll button is pressed
+var clickButtonRoll = function( ) {
+	
+	if( !localState.dispensing ) {
+	
+		cloud.dispense( );
+	
+	}
+	
+}
+
 // Does a single update of the loading screen
 var updateLoading = function( ) {
 
@@ -101,7 +113,11 @@ document.addEventListener( "DOMContentLoaded", function( e ) {
 	pageLoading = document.getElementById( "pageLoading" );
 	
 	// Get inputs and text
+	buttonRoll = document.getElementById( "buttonRoll" );
 	textLoading = document.getElementById( "textLoading" );
+	
+	// Set up event listeners
+	buttonRoll.addEventListener( "click", clickButtonRoll );
 
 	// Open initial loading page
 	loaded = false;
