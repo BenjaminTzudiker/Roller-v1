@@ -1,0 +1,120 @@
+* {
+
+	box-sizing: border-box;
+	font-family: sans-serif;
+	border: 0px;
+
+}
+
+.unselectable {
+
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+
+}
+
+.row {
+
+	padding: 10px;
+
+}
+
+.row::after {
+
+	content: "";
+	clear: both;
+	display: table;
+
+}
+
+[class*="col"] {
+
+    float: left;
+    width: 100%;
+    padding: 10px;
+
+}
+
+/* Column classes, used to define element width for larger devices */
+@media only screen and (min-width: 768px) {
+
+	.col1 {
+
+		width: 8.333%;
+
+	}
+
+	.col2 {
+
+		width: 16.666%;
+
+	}
+
+	.col3 {
+
+		width: 25%;
+
+	}
+
+	.col4 {
+
+		width: 33.333%;
+
+	}
+
+	.col5 {
+
+		width: 41.666%;
+
+	}
+
+	.col6 {
+
+		width: 50%;
+
+	}
+
+	.col7 {
+
+		width: 58.333%;
+
+	}
+
+	.col8 {
+
+		width: 66.666%;
+
+	}
+
+	.col9 {
+
+		width: 75%;
+
+	}
+
+	.col10 {
+
+		width: 83.333%;
+
+	}
+
+	.col11 {
+
+		width: 91.666%;
+
+	}
+
+	.col12 {
+
+		width: 100%;
+
+	}
+	
+}
+
+/* Column method inspired by w3schools */
